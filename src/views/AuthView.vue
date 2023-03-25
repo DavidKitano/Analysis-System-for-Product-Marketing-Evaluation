@@ -11,7 +11,7 @@
                         :maxlength="maxLengthPassword" :minlength="minLengthPassword" :show-password="showPassword" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="loginSubmit(loginFormRef)">Query</el-button>
+                    <el-button type="primary" @click="loginSubmit(loginFormRef)">登录</el-button>
                     <el-text id="forgotPassBtn" size="small" type="primary" @click="forgetVisible = true">忘记密码？</el-text>
                 </el-form-item>
             </el-form>
@@ -42,7 +42,7 @@
                         :maxlength="maxLengthPassword" :minlength="minLengthPassword" :show-password="showPassword" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="regSubmit(loginFormRef)">登录</el-button>
+                    <el-button type="primary" @click="regSubmit(regFormRef)">注册</el-button>
                 </el-form-item>
             </el-form>
         </el-main>
