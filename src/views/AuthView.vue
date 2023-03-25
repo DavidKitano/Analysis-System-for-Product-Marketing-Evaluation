@@ -31,7 +31,8 @@
                         :minlength="lengthCapture" />
                 </el-form-item>
                 <el-form-item label="用户名" prop="regUsername">
-                    <el-input name="regUsername" v-model="regForm.regUsername" placeholder="请输入用户名" />
+                    <el-input name="regUsername" v-model="regForm.regUsername" placeholder="请输入用户名"
+                        :maxlength="maxLengthUsername" :minlength="minLengthUsername" />
                 </el-form-item>
                 <el-form-item label="密码" prop="regPassword">
                     <el-input name="regPassword" v-model="regForm.regPassword" placeholder="请输入密码"
@@ -83,6 +84,10 @@ const formInlineStyle = ref<String>('max-width: 460px');
 const maxLengthPassword = ref<Number>(25);
 /** 密码可输入最小长度 */
 const minLengthPassword = ref<Number>(6);
+/** 用户名可输入最大长度 */
+const maxLengthUsername = ref<Number>(25);
+/** 用户名可输入最小长度 */
+const minLengthUsername = ref<Number>(3);
 /** 验证码可输入长度 */
 const lengthCapture = ref<Number>(4);
 /** Element Plus 展示密码切换钮 */
@@ -148,12 +153,12 @@ const regRules = reactive<FormRules>({
         { validator: validation.emailValidate, trigger: 'blur' },
     ],
     regUsername: [
-        { validator: validation.emailValidate, trigger: 'change' },
-        { validator: validation.emailValidate, trigger: 'blur' },
+        { validator: validation.usernameValidate, trigger: 'change' },
+        { validator: validation.usernameValidate, trigger: 'blur' },
     ],
     regCapture: [
-        { validator: validation.emailValidate, trigger: 'change' },
-        { validator: validation.emailValidate, trigger: 'blur' },
+        { validator: validation.captureValidate, trigger: 'change' },
+        { validator: validation.captureValidate, trigger: 'blur' },
     ],
     regPassword: [
         {

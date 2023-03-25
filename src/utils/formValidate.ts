@@ -1,5 +1,6 @@
 /** 邮箱校验正则表达式 */
 const emailReg = new RegExp('^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$');
+const numberReg = new RegExp('^[0-9]+$');
 
 /**
  * 邮箱校验
@@ -14,6 +15,44 @@ export const emailValidate = (rule: any, value: any, callback: any) => {
     }
     else if (!emailReg.test(value)) {
         callback(new Error('请输入正确的邮箱'));
+    }
+    else {
+        callback();
+    }
+}
+
+/**
+ * 用户名校验
+ * 
+ * @param rule 校验规则
+ * @param value 用户名值
+ * @param callback callback函数
+ */
+export const usernameValidate = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        callback(new Error('请输入用户名'));
+    }
+    else if (value.length < 3 || value.length > 20) {
+        callback(new Error('请输入3~20位以内的用户名'));
+    }
+    else {
+        callback();
+    }
+}
+
+/**
+ * 验证码位数校验，深入校验在后台
+ * 
+ * @param rule 校验规则
+ * @param value 验证码值
+ * @param callback callback函数
+ */
+export const captureValidate = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        callback(new Error('请输入验证码'));
+    }
+    else if (value.length !== 4 || !numberReg.test(value)) {
+        callback(new Error('请输入4位数字验证码'));
     }
     else {
         callback();
