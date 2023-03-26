@@ -1,7 +1,120 @@
-#forgotPassBtn {
-    margin-left: 1rem;
-    margin-bottom: 1rem;
-    height: min-content;
+.dialog-footer button:first-child {
+    margin-right: 10px;
+}
+
+.mainBox {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+
+    #forgotPassBtn {
+        margin-left: 1rem;
+        margin-bottom: 1rem;
+        height: min-content;
+        width: max-content;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
+    #guideBtn {
+        font-size: 1.1rem;
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
+    .contentBox {
+        overflow: hidden; // BFC
+        min-width: 50rem;
+        min-height: 32rem;
+        max-width: 72rem;
+        max-height: 32rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: space-between;
+        background-color: rgb(255, 230, 230);
+        margin: 0 auto;
+        border-radius: 2rem;
+        box-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+
+        .contentPre {
+            box-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+            border-radius: 2rem;
+            position: absolute;
+            margin-left: 50%;
+            width: 50%;
+            height: 100%;
+            z-index: 2;
+            background-color: rgb(222, 245, 252);
+            transition-duration: 1s;
+            -webkit-transition-duration: 1s;
+            -o-transition-duration: 1s;
+            -moz-transition-duration: 1s;
+            -ms-transition-duration: 1s;
+        }
+
+        .contentBack {
+            position: relative;
+        }
+
+        .contentElement {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 1.5rem;
+            text-indent: 1.5rem;
+            font-weight: 600;
+            text-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+        }
+
+        .el-main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            flex-flow: column;
+        }
+    }
+}
+
+.contentForm {
+    display: flex;
+    justify-content: center;
+}
+
+.el-form {
+    overflow: hidden;
+    text-align: center;
+}
+
+.generalInput {
+    width: 15rem;
+}
+
+.captureInput {
+    width: 9rem;
+    margin-right: 1rem;
+
+    &+.el-button {
+        width: 5rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+}
+
+.forgetBox {
     width: max-content;
-    cursor: pointer;
+    height: max-content;
 }

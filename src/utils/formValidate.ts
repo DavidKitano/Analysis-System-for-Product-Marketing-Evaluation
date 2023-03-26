@@ -1,6 +1,6 @@
 /** 邮箱校验正则表达式 */
-const emailReg = new RegExp('^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$');
-const numberReg = new RegExp('^[0-9]+$');
+export const emailReg = new RegExp('^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$');
+export const numberReg = new RegExp('^[0-9]+$');
 
 /**
  * 邮箱校验
@@ -70,7 +70,7 @@ export const captureValidate = (rule: any, value: any, callback: any) => {
  * @param rule 校验规则
  * @param value 密码值
  * @param callback callback函数
- * @param mod 模式（登录/注册，匹配字符串login及reg）
+ * @param mod 模式（登录/注册，匹配字符串login/reg/forget）
  * @param value2 重复密码值
  * @return 一个监听是否通过改变密码而操控校验重复密码框的布尔值
  */
@@ -81,7 +81,7 @@ export const passwordValidate = (rule: any, value: any, callback: any, mod: Stri
     else if (value.length < 6 || value.length > 20) {
         callback(new Error('请输入6~20位的密码'));
     }
-    else if (mod === 'reg') {
+    else if (mod === 'reg' || mod === 'forget') {
         if (value2 !== '') {
             callback();
             return true;
