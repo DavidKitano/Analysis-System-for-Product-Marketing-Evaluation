@@ -11,10 +11,10 @@ export const numberReg = new RegExp('^[0-9]+$');
  */
 export const emailValidate = (rule: any, value: any, callback: any) => {
     if (value === '') {
-        callback(new Error('请输入邮箱'));
+        callback(new Error('Please input email!'));
     }
     else if (!emailReg.test(value)) {
-        callback(new Error('请输入正确的邮箱'));
+        callback(new Error('Please input a correct email!'));
     }
     else {
         callback();
@@ -30,10 +30,10 @@ export const emailValidate = (rule: any, value: any, callback: any) => {
  */
 export const usernameValidate = (rule: any, value: any, callback: any) => {
     if (value === '') {
-        callback(new Error('请输入用户名'));
+        callback(new Error('Please input username!'));
     }
     else if (value.length < 3 || value.length > 20) {
-        callback(new Error('请输入3~20位以内的用户名'));
+        callback(new Error('Username must be within 3~20 length!'));
     }
     else {
         callback();
@@ -47,12 +47,12 @@ export const usernameValidate = (rule: any, value: any, callback: any) => {
  * @param value 验证码值
  * @param callback callback函数
  */
-export const captureValidate = (rule: any, value: any, callback: any) => {
+export const captchaValidate = (rule: any, value: any, callback: any) => {
     if (value === '') {
-        callback(new Error('请输入验证码'));
+        callback(new Error('Please input verify code!'));
     }
     else if (value.length !== 4 || !numberReg.test(value)) {
-        callback(new Error('请输入4位数字验证码'));
+        callback(new Error('Please input verify code with 4 numbers!'));
     }
     else {
         callback();
@@ -76,10 +76,10 @@ export const captureValidate = (rule: any, value: any, callback: any) => {
  */
 export const passwordValidate = (rule: any, value: any, callback: any, mod: String, value2: any | undefined | null) => {
     if (value === '') {
-        callback(new Error('请输入密码'));
+        callback(new Error('Please input the password!'));
     }
     else if (value.length < 6 || value.length > 20) {
-        callback(new Error('请输入6~20位的密码'));
+        callback(new Error('Password must be within 6~20 length!'));
     }
     else if (mod === 'reg' || mod === 'forget') {
         if (value2 !== '') {
@@ -104,13 +104,13 @@ export const passwordValidate = (rule: any, value: any, callback: any, mod: Stri
  */
 export const passwordDoubleValidate = (rule: any, value: any, callback: any, value2: any) => {
     if (value === '') {
-        callback(new Error('请输入密码'));
+        callback(new Error('Please input the password!'));
     }
     else if (value.length < 6 || value.length > 20) {
-        callback(new Error('请输入6~20位密码'));
+        callback(new Error('Password must be within 6~20 length!'));
     }
     else if (value !== value2) {
-        callback(new Error('两次输入不一致'));
+        callback(new Error('Confirmation doesn\'t match!'));
     }
     else {
         callback();

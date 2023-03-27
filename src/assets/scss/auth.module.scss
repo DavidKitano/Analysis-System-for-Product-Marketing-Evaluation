@@ -2,6 +2,17 @@
     margin-right: 10px;
 }
 
+/* 
+    /deep/在scoped中报错 
+    可用v-deep选择器（弃用）替代深度选择器
+    或:deep(<inner-selector>)
+    调整子组件样式 
+*/
+:deep(.el-divider__text) {
+    text-align: center;
+    background-color: rgb(102, 138, 183);
+}
+
 .mainBox {
     width: 100vw;
     height: 100vh;
@@ -40,20 +51,41 @@
         display: flex;
         justify-content: space-between;
         align-items: space-between;
-        background-color: rgb(255, 230, 230);
+        background-color: rgba(255, 255, 255);
         margin: 0 auto;
         border-radius: 2rem;
         box-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
 
         .contentPre {
+
+            a {
+                color: white;
+                text-decoration: none;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            #guideBtn {
+                color: rgb(234, 234, 234);
+                cursor: pointer;
+            }
+
             box-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.5rem;
+            word-spacing: 0.2rem;
+            text-indent: 0.5rem;
             border-radius: 2rem;
             position: absolute;
             margin-left: 50%;
             width: 50%;
             height: 100%;
             z-index: 2;
-            background-color: rgb(222, 245, 252);
+            background-color: rgba(64, 109, 165, 0.8);
+            backdrop-filter: blur(10px);
             transition-duration: 1s;
             -webkit-transition-duration: 1s;
             -o-transition-duration: 1s;
@@ -73,7 +105,7 @@
             font-size: 2rem;
             text-align: center;
             margin-bottom: 2rem;
-            letter-spacing: 1.5rem;
+            letter-spacing: 0.5rem;
             text-indent: 1.5rem;
             font-weight: 600;
             text-shadow: 1rem 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
@@ -103,7 +135,7 @@
     width: 15rem;
 }
 
-.captureInput {
+.captchaInput {
     width: 9rem;
     margin-right: 1rem;
 

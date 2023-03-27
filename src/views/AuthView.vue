@@ -5,66 +5,74 @@
 
         <span class="ml-2">{{ isDark ? 'Dark' : 'Light' }}</span>
     </button> -->
-    <div class="mainBox">
+    <div class="mainBox" v-loading="regLoading || loginLoading">
         <el-container class="contentBox">
             <el-main class="contentElement contentPre" id="contentPre">
-                <h2 id="guideInfo">没有账号？</h2>
-                <el-text type="primary" id="guideBtn" @click="switchEle()">点此注册</el-text>
+                <RouterLink to="/home">
+                    <h5>&Lt; HOME</h5>
+                </RouterLink>
+                <h2 id="guideInfo">No Account?</h2>
+                <el-divider id="guideDivide" border-style="dotted">
+                    ⭐
+                </el-divider>
+                <el-text type="primary" id="guideBtn" @click="switchEle()">Click here to register</el-text>
             </el-main>
             <el-main class="contentElement">
-                <h1>登录</h1>
+                <h1>Login</h1>
                 <section class="contentForm contentBack">
                     <el-form :label-position="labelPosition" :label-width="labelWidth" :model="loginForm"
                         :style="formInlineStyle" ref="loginFormRef" :rules="loginRules" :size="formSize">
-                        <el-form-item label="邮箱" prop="loginEmail">
+                        <el-form-item label="Email" prop="loginEmail">
                             <el-input class="generalInput" name="loginEmail" v-model="loginForm.loginEmail"
-                                placeholder="请输入邮箱" />
+                                placeholder="Please Input email" />
                         </el-form-item>
-                        <el-form-item label="密码" prop="loginPassword">
+                        <el-form-item label="Password" prop="loginPassword">
                             <el-input class="generalInput" name="loginPassword" v-model="loginForm.loginPassword"
-                                placeholder="请输入密码" :maxlength="maxLengthPassword" :minlength="minLengthPassword"
-                                :show-password="showPassword" />
+                                placeholder="Please Input password" :maxlength="maxLengthPassword"
+                                :minlength="minLengthPassword" :show-password="showPassword" />
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="loginSubmit(loginFormRef)">登录</el-button>
+                            <el-button type="primary" @click="loginSubmit(loginFormRef)">Login</el-button>
                             <el-text id="forgotPassBtn" size="small" type="primary"
-                                @click="forgetVisible = true">忘记密码？</el-text>
+                                @click="forgetVisible = true">Forgot?</el-text>
                         </el-form-item>
                     </el-form>
                 </section>
             </el-main>
             <el-main class="contentElement">
-                <h1>注册</h1>
-                <section class="contentForm" v-loading="regLoading">
+                <h1>Register</h1>
+                <section class="contentForm">
                     <el-form :label-position="labelPosition" :label-width="labelWidth" :model="regForm"
                         :style="formInlineStyle" ref="regFormRef" :rules="regRules" :size="formSize"
                         :status-icon="statusIcon">
-                        <el-form-item label="邮箱" prop="regEmail">
-                            <el-input class="generalInput" name="regEmail" v-model="regForm.regEmail" placeholder="请输入邮箱" />
+                        <el-form-item label="Email" prop="regEmail">
+                            <el-input class="generalInput" name="regEmail" v-model="regForm.regEmail"
+                                placeholder="Please input email" />
                         </el-form-item>
-                        <el-form-item label="验证码" prop="regCapture">
-                            <el-input class="captureInput" name="regCapture" v-model="regForm.regCapture"
-                                placeholder="请输入验证码" :maxlength="lengthCapture" :minlength="lengthCapture" />
-                            <el-button type="primary" :disabled="onRegCold" @click="captureAccess(-1)">
-                                {{ captureRegBtnInfo }}
+                        <el-form-item label="Code" prop="regCaptcha">
+                            <el-input class="captchaInput" name="regCaptcha" v-model="regForm.regCaptcha"
+                                placeholder="Verify code" :maxlength="lengthCaptcha" :minlength="lengthCaptcha" />
+                            <el-button type="primary" :disabled="onRegCold" @click="captchaAccess(-1)">
+                                {{ captchaRegBtnInfo }}
                             </el-button>
                         </el-form-item>
-                        <el-form-item label="用户名" prop="regUsername">
+                        <el-form-item label="Username" prop="regUsername">
                             <el-input class="generalInput" name="regUsername" v-model="regForm.regUsername"
-                                placeholder="请输入用户名" :maxlength="maxLengthUsername" :minlength="minLengthUsername" />
+                                placeholder="Please input username" :maxlength="maxLengthUsername"
+                                :minlength="minLengthUsername" />
                         </el-form-item>
-                        <el-form-item label="密码" prop="regPassword">
+                        <el-form-item label="Password" prop="regPassword">
                             <el-input class="generalInput" name="regPassword" v-model="regForm.regPassword"
-                                placeholder="请输入密码" :maxlength="maxLengthPassword" :minlength="minLengthPassword"
-                                :show-password="showPassword" />
+                                placeholder="Please input password" :maxlength="maxLengthPassword"
+                                :minlength="minLengthPassword" :show-password="showPassword" />
                         </el-form-item>
-                        <el-form-item label="重复密码" prop="regCheckPassword">
+                        <el-form-item label="Confirm" prop="regCheckPassword">
                             <el-input class="generalInput" name="regCheckPassword" v-model="regForm.regCheckPassword"
-                                placeholder="请再次输入密码" :maxlength="maxLengthPassword" :minlength="minLengthPassword"
-                                :show-password="showPassword" />
+                                placeholder="Please confirm password" :maxlength="maxLengthPassword"
+                                :minlength="minLengthPassword" :show-password="showPassword" />
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="regSubmit(regFormRef)">注册</el-button>
+                            <el-button type="primary" @click="regSubmit(regFormRef)">Register</el-button>
                         </el-form-item>
                     </el-form>
                 </section>
@@ -74,43 +82,43 @@
 
     <!-- 忘记密码 -->
     <div class="forgetBox" v-loading="forgetLoading">
-        <el-dialog v-model="forgetVisible" title="更改密码" width="50%" :lock-scroll="lockScroll"
+        <el-dialog v-model="forgetVisible" title="Reset Password" width="50%" :lock-scroll="lockScroll"
             :close-on-click-modal="closeOnClickModal" :destroy-on-close="DestroyOnClose" :show-close="showClose"
             :close-on-press-escape="closeOnPressEscape">
-            <section class="contentForm" v-loading="forgetLoading">
-                <el-form :label-position="labelPosition" :label-width="labelWidth" :model="forgetForm"
+            <section class="contentForm">
+                <el-form :label-position="labelPosition" :label-width="labelWidth2" :model="forgetForm"
                     :style="formInlineStyle" ref="forgetFormRef" :rules="forgetRules" :size="formSize2"
                     :status-icon="statusIcon">
-                    <el-form-item label="邮箱" prop="forgetEmail">
+                    <el-form-item label="Email" prop="forgetEmail">
                         <el-input class="generalInput" ref="forgetFormEmailRef" name="forgetEmail"
-                            v-model="forgetForm.forgetEmail" placeholder="请输入邮箱" />
+                            v-model="forgetForm.forgetEmail" placeholder="Please input email" />
                     </el-form-item>
-                    <el-form-item label="验证码" prop="forgetCapture">
-                        <el-input class="captureInput" name="forgetCapture" v-model="forgetForm.forgetCapture"
-                            placeholder="请输入验证码" :maxlength="lengthCapture" :minlength="lengthCapture" />
-                        <el-button type="primary" :disabled="onForgetCold" @click="captureAccess(1)">
-                            {{ captureForgetBtnInfo }}
+                    <el-form-item label="Code" prop="forgetCaptcha">
+                        <el-input class="captchaInput" name="forgetCaptcha" v-model="forgetForm.forgetCaptcha"
+                            placeholder="Verify code" :maxlength="lengthCaptcha" :minlength="lengthCaptcha" />
+                        <el-button type="primary" :disabled="onForgetCold" @click="captchaAccess(1)">
+                            {{ captchaForgetBtnInfo }}
                         </el-button>
                     </el-form-item>
-                    <el-form-item label="新密码" prop="forgetPassword">
+                    <el-form-item label="New Password" prop="forgetPassword">
                         <el-input class="generalInput" name="forgetPassword" v-model="forgetForm.forgetPassword"
-                            placeholder="请输入密码" :maxlength="maxLengthPassword" :minlength="minLengthPassword"
-                            :show-password="showPassword" />
+                            placeholder="Please input your new password" :maxlength="maxLengthPassword"
+                            :minlength="minLengthPassword" :show-password="showPassword" />
                     </el-form-item>
-                    <el-form-item label="确认密码" prop="forgetCheckPassword">
+                    <el-form-item label="Confirm" prop="forgetCheckPassword">
                         <el-input class="generalInput" name="forgetCheckPassword" v-model="forgetForm.forgetCheckPassword"
-                            placeholder="请再次输入密码" :maxlength="maxLengthPassword" :minlength="minLengthPassword"
-                            :show-password="showPassword" />
+                            placeholder="Please confirm your password" :maxlength="maxLengthPassword"
+                            :minlength="minLengthPassword" :show-password="showPassword" />
                     </el-form-item>
                 </el-form>
             </section>
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="closeForgetWindow()">
-                        取消
+                        Cancel
                     </el-button>
                     <el-button type="primary" @click="forgetSubmit(forgetFormRef)">
-                        提交
+                        Submit
                     </el-button>
                 </span>
             </template>
@@ -120,12 +128,12 @@
 
 <script setup lang="ts">
 import type { FormRules, FormInstance } from 'element-plus';
-import { ElNotification } from 'element-plus';
+import { ElNotification, ElMessage } from 'element-plus';
 import { onMounted, reactive, ref, h } from 'vue';
 import { useRouter } from "vue-router";
 import * as validation from '@/utils/formValidate';
 import * as auth from '@/api/auth';
-import { right } from '@popperjs/core';
+import * as opt from '@/utils/optimize';
 // import { useDark, useToggle } from '@vueuse/core'
 
 /** 获取路由实例 */
@@ -133,7 +141,7 @@ const router = useRouter();
 /** 默认访问的表单 login/register */
 const mod = router.currentRoute.value.query.mod;
 /** 是否展示注册表单的布尔值 */
-let regFormShow = ref(false);
+let regFormShow = ref<Boolean>(false);
 
 /** contentPre的实例 */
 let pre = document.getElementById('contentPre') as HTMLElement;
@@ -145,9 +153,12 @@ let btn = document.getElementById('guideBtn') as HTMLElement;
 /** Element Plus 标签吸附位置 */
 const labelPosition = ref<String>('left');
 /** Element Plus 标签长度 */
-const labelWidth = ref<String>('70px');
+const labelWidth = ref<String>('80px');
+/** Element Plus 标签长长度 */
+const labelWidth2 = ref<String>('120px');
 /** Element Plus 表格尺寸 */
 const formSize = ref<String>('default');
+/** Element Plus 表格大尺寸 */
 const formSize2 = ref<String>('large');
 /** 表格内联样式 */
 const formInlineStyle = ref<String>('max-width: 460px');
@@ -160,7 +171,7 @@ const maxLengthUsername = ref<Number>(25);
 /** 用户名可输入最小长度 */
 const minLengthUsername = ref<Number>(3);
 /** 验证码可输入长度 */
-const lengthCapture = ref<Number>(4);
+const lengthCaptcha = ref<Number>(4);
 /** Element Plus 展示密码切换钮 */
 const showPassword = ref<Boolean>(true);
 /** Element Plus 验证状态标志 */
@@ -177,17 +188,25 @@ const DestroyOnClose = ref<Boolean>(true);
 const showClose = ref<Boolean>(false);
 /** Element Plus 忘记密码模态框是否可以通过ESC关闭 */
 const closeOnPressEscape = ref<Boolean>(false);
-
+/** Element Plus 忘记密码加载 */
 const forgetLoading = ref<Boolean>(false);
+/** Element Plus 注册加载 */
 const regLoading = ref<Boolean>(false);
+/** Element Plus 登录加载 */
+const loginLoading = ref<Boolean>(false);
+/** 注册冷却 */
 const onRegCold = ref<Boolean>(false);
+/** 忘记密码冷却 */
 const onForgetCold = ref<Boolean>(false);
+/** 注册获取验证码倒计时 */
 const regCountdown = ref<Number>(60);
+/** 忘记密码获取验证码倒计时 */
 const forgetCountdown = ref<Number>(60);
 
-/** 获取验证码按钮内容 */
-const captureRegBtnInfo = ref<String>('获取验证码');
-const captureForgetBtnInfo = ref<String>('获取验证码');
+/** 获取验证码按钮内容 - 注册 */
+const captchaRegBtnInfo = ref<String>('Get Code');
+/** 获取验证码按钮内容 - 忘记密码 */
+const captchaForgetBtnInfo = ref<String>('Get Code');
 
 
 /** 登录表格实例 */
@@ -214,14 +233,14 @@ const regForm = reactive({
     regPassword: '',
     regCheckPassword: '',
     regUsername: '',
-    regCapture: ''
+    regCaptcha: ''
 })
 /** 忘记密码表格监听 forgetXXX*/
 const forgetForm = reactive({
     forgetEmail: '',
     forgetPassword: '',
     forgetCheckPassword: '',
-    forgetCapture: ''
+    forgetCaptcha: ''
 })
 
 /** 登录表格校验监听 */
@@ -255,9 +274,9 @@ const regRules = reactive<FormRules>({
         { validator: validation.usernameValidate, trigger: 'change' },
         { validator: validation.usernameValidate, trigger: 'blur' },
     ],
-    regCapture: [
-        { validator: validation.captureValidate, trigger: 'change' },
-        { validator: validation.captureValidate, trigger: 'blur' },
+    regCaptcha: [
+        { validator: validation.captchaValidate, trigger: 'change' },
+        { validator: validation.captchaValidate, trigger: 'blur' },
     ],
     regPassword: [
         {
@@ -309,9 +328,9 @@ const forgetRules = reactive<FormRules>({
         { validator: validation.emailValidate, trigger: 'change' },
         { validator: validation.emailValidate, trigger: 'blur' },
     ],
-    forgetCapture: [
-        { validator: validation.captureValidate, trigger: 'change' },
-        { validator: validation.captureValidate, trigger: 'blur' },
+    forgetCaptcha: [
+        { validator: validation.captchaValidate, trigger: 'change' },
+        { validator: validation.captchaValidate, trigger: 'blur' },
     ],
     forgetPassword: [
         {
@@ -365,7 +384,33 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async (valid) => {
         if (valid) {
-            await auth.loginApi(loginForm);
+            loginLoading.value = true;
+            setTimeout(async () => {
+                opt.debounce(async () => {
+                    let res = await auth.loginApi(loginForm);
+                    res = opt.formalizeRes(res);
+                    loginLoading.value = false;
+                    if (!res) return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 1500
+                        })
+                        // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
+                        sessionStorage.setItem('username', res['data']);
+                        location.href = '/home';
+                    } else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        })
+                    }
+                }, 1000, true);
+            }, 1000)
         }
         else {
             return false
@@ -381,7 +426,31 @@ const regSubmit = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async (valid) => {
         if (valid) {
-            await auth.regApi(regForm);
+            regLoading.value = true;
+            setTimeout(async () => {
+                opt.debounce(async () => {
+                    let res = await auth.regApi(regForm);
+                    res = opt.formalizeRes(res);
+                    regLoading.value = false;
+                    if (!res) return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 1500
+                        })
+                        location.href = '/auth?mod=log';
+                    } else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        })
+                    }
+                }, 1000, true);
+            }, 1000)
         }
         else {
             return false;
@@ -397,7 +466,8 @@ const forgetSubmit = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate(async (valid) => {
         if (valid) {
-            await auth.forgetApi(forgetForm);
+            forgetLoading.value = true;
+            auth.forgetApi(forgetForm);
         }
         else {
             return false;
@@ -409,7 +479,7 @@ const forgetSubmit = async (formEl: FormInstance | undefined) => {
  * 简单检查邮箱后向api发起邮箱验证请求
  * @param mod 参数，-1为注册用，1为找回密码用
  */
-const captureAccess = async (mod: Number | undefined) => {
+const captchaAccess = async (mod: Number | undefined) => {
     if (mod === -1)
         regLoading.value = true;
     if (mod === 1)
@@ -423,7 +493,6 @@ const captureAccess = async (mod: Number | undefined) => {
             regLoading.value = false;
             if (regForm.regEmail === '' || !validation.emailReg.test(regForm.regEmail)) {
                 avail = false;
-                console.log('a');
             }
             else {
                 avail = true;
@@ -440,25 +509,45 @@ const captureAccess = async (mod: Number | undefined) => {
         }
         if (!avail) {
             ElNotification({
-                title: '邮箱填写错误',
-                message: h('i', { style: 'color: red' }, '请检查邮箱的填写'),
+                title: 'Email Wrong Input',
+                message: h('b', { style: 'color: red;text-align:left;' }, 'You\'ve typed into a wrong email. Maybe it\'s due to format issues. Please check and try again. '),
                 type: 'error',
                 duration: 2000,
                 position: 'top-right',
                 showClose: false
-            })
+            });
         }
         else {
             setCountdown(mod);
-            if (mod === -1) {
-                await auth.emailAccessApi(regForm.regEmail);
-            }
-            if (mod === 1) {
-                await auth.emailAccessApi(forgetForm.forgetEmail);
-            }
+            opt.debounce(async () => {
+                if (mod === -1) {
+                    let res = await auth.emailAccessApi(regForm.regEmail);
+                    res = opt.formalizeRes(res);
+                    console.log(res);
+                    if (!res)
+                        return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 2500
+                        });
+                    } else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        });
+                    }
+                }
+                if (mod === 1) {
+                    await auth.emailAccessApi(forgetForm.forgetEmail);
+                }
+            }, 1000, true)
         }
     }, 1000)
-
 }
 
 /**
@@ -467,12 +556,12 @@ const captureAccess = async (mod: Number | undefined) => {
 const switchEle = () => {
     regFormShow.value = !regFormShow.value;
     if (regFormShow.value) {
-        info.innerText = '已有账号？';
-        btn.innerText = '点此登录';
+        info.innerText = 'Already have an account?';
+        btn.innerText = 'Click here to login';
         pre.style.marginLeft = '0%';
     } else {
-        info.innerText = '没有账号？';
-        btn.innerText = '点此注册';
+        info.innerText = 'No account?';
+        btn.innerText = 'Click here to register';
         pre.style.marginLeft = '50%';
     }
 }
@@ -489,24 +578,24 @@ const setCountdown = (mod: Number | undefined) => {
         if (mod === -1) {
             regCountdown.value = Number(regCountdown.value) - 1;
             onRegCold.value = true;
-            captureRegBtnInfo.value = regCountdown.value + " 秒后重试";
+            captchaRegBtnInfo.value = "Retry in " + regCountdown.value;
         }
         else if (mod === 1) {
             forgetCountdown.value = Number(forgetCountdown.value) - 1;
             onForgetCold.value = true;
-            captureForgetBtnInfo.value = forgetCountdown.value + " 秒后重试";
+            captchaForgetBtnInfo.value = "Retry in " + forgetCountdown.value;
         }
         if ((mod === -1 && regCountdown.value <= 0) || (mod === 1 && forgetCountdown.value <= 0)) {
             clearInterval(countdownInstance);
             if (mod === -1) {
                 regCountdown.value = 60;
                 onRegCold.value = false;
-                captureRegBtnInfo.value = "获取验证码";
+                captchaRegBtnInfo.value = "Get Code";
             }
             else if (mod === 1) {
                 forgetCountdown.value = 60;
                 onForgetCold.value = false;
-                captureForgetBtnInfo.value = "获取验证码";
+                captchaForgetBtnInfo.value = "Get Code";
             }
 
         }
@@ -554,12 +643,12 @@ onMounted(() => {
         }
     }
     if (regFormShow.value) {
-        info.innerText = '已有账号？';
-        btn.innerText = '点此登录';
+        info.innerText = 'Already have an account?';
+        btn.innerText = 'Click here to login';
         pre.style.marginLeft = '0%';
     } else {
-        info.innerText = '没有账号？';
-        btn.innerText = '点此注册';
+        info.innerText = 'No account?';
+        btn.innerText = 'Click here to register';
         pre.style.marginLeft = '50%';
     }
 })

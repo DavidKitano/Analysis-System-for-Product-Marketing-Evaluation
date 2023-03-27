@@ -19,12 +19,27 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
     }),
-
-
   ],
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+
+  server: {
+    base: '/',
+    host: 'localhost',
+    port: 5173,
+    open: true,
+    // https: true,
+    proxy: {
+      '/apis': {
+        target: 'https://40f071780t.goho.co:443/',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/apis/, '')
+      }
     }
   }
 })

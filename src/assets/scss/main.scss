@@ -1,6 +1,7 @@
 @import './base.scss';
 
 #app {
+    width: 100%;
     min-width: 100vw;
     min-height: 100vh;
     overflow: hidden;
@@ -9,5 +10,5 @@
     -webkit-box-sizing: border-box;
     -o-box-sizing: border-box;
     -ms-box-sizing: border-box;
-    background-color: rgb(222, 245, 252);
+    background-color: rgb(246, 248, 252)
 }
