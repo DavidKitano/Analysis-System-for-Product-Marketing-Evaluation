@@ -142,3 +142,25 @@ export async function emailAccessApi(email: String) {
     });
     return _res;
 }
+
+export async function changeUsernameApi(name: String) {
+    const url = opt.timestamp('/auth/username/reset');
+    const email = sessionStorage.getItem('id');
+    let _res;
+    if (!email || !name) {
+        return opt.errRes;
+    }
+    await authAxios({
+        method: 'PUT',
+        url: url + '',
+        data: {
+            email: email,
+            username: name
+        }
+    }).then(res => {
+        _res = res
+    }).catch(err => {
+        console.error(err);
+    });
+    return _res;
+}

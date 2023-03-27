@@ -430,6 +430,7 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
                         })
                         // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
                         sessionStorage.setItem('username', res['data']);
+                        sessionStorage.setItem('id', loginForm.loginEmail);
                         location.href = '/home';
                     } else {
                         ElMessage({
