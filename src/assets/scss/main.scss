@@ -12,3 +12,7 @@
     -ms-box-sizing: border-box;
     background-color: rgb(246, 248, 252)
 }
+
+.el-loading-mask {
+    z-index: 9999999;
+}

@@ -32,18 +32,24 @@ export async function loginApi(loginForm: Object) {
 
 export async function logoutApi() {
     const url = opt.timestamp('auth/logout');
-    if (!localStorage.getItem('token')) {
+    // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
+    // if (!localStorage.getItem('token')) {
+    //     return opt.errRes;
+    // }
+    if (!sessionStorage.getItem('username')) {
         return opt.errRes;
     }
     let _res;
     await authAxios({
         method: 'GET',
         url: url + '',
-        headers: {
-            token: localStorage.getItem('token')
-        }
+        // headers: {
+        //     token: localStorage.getItem('token')
+        // }
     }).then(res => {
-        _res = res
+        _res = res;
+        console.log(_res);
+
     }).catch(err => {
         console.error(err);
     });
@@ -73,10 +79,48 @@ export async function regApi(regForm: Object) {
     return _res;
 }
 
-export function forgetApi(forgetForm: Object) {
-    opt.debounce(async () => {
-        await console.log('忘记密码', forgetForm);
-    }, 1500, true)
+export async function forgetVerifyApi(forgetForm: Object) {
+    const url = opt.timestamp('auth/mail/verify')
+    if (!forgetForm['forgetEmail'] || !forgetForm['forgetCaptcha']) {
+        return opt.errRes;
+    }
+    let _res;
+    await authAxios({
+        method: 'POST',
+        url: url + '',
+        data: {
+            email: forgetForm['forgetEmail'],
+            captcha: forgetForm['forgetCaptcha']
+        }
+    }).then(res => {
+        _res = res;
+    }).catch(err => {
+        console.error(err);
+    });
+    return _res;
+}
+
+export async function forgetAllApi(forgetForm: Object) {
+    const url = opt.timestamp('auth/mail/reset')
+    if (!forgetForm['forgetEmail'] || !forgetForm['forgetCaptcha'] || !forgetForm['forgetPassword'] || !forgetForm['forgetCheckPassword']) {
+        return opt.errRes;
+    }
+    let _res;
+    await authAxios({
+        method: 'POST',
+        url: url + '',
+        data: {
+            email: forgetForm['forgetEmail'],
+            captcha: forgetForm['forgetCaptcha'],
+            password: forgetForm['forgetPassword'],
+            password_confirm: forgetForm['forgetCheckPassword']
+        }
+    }).then(res => {
+        _res = res;
+    }).catch(err => {
+        console.error(err);
+    });
+    return _res;
 }
 
 export async function emailAccessApi(email: String) {

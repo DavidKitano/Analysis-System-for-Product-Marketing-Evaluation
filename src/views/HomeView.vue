@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import generalHeader from '@/components/generalHeader.vue'
+import generalHeader from '@/components/generalHeader.vue';
+import analyzerBox from '@/components/analyzerBox.vue';
 </script>
 
 <template>
@@ -9,9 +10,7 @@ import generalHeader from '@/components/generalHeader.vue'
     </header>
     <el-container>
       <el-main>
-        <el-card class="box-card">
-          <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div>
-        </el-card>
+        <analyzerBox></analyzerBox>
       </el-main>
     </el-container>
   </main>

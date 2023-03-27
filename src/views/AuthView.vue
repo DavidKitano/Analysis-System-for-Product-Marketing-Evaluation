@@ -2,10 +2,9 @@
     <!-- 深色模式 开发中 -->
     <!-- <button @click="toggleDark()">
         <i inline-block align-middle i="dark:carbon-moon carbon-sun" />
-
         <span class="ml-2">{{ isDark ? 'Dark' : 'Light' }}</span>
     </button> -->
-    <div class="mainBox" v-loading="regLoading || loginLoading">
+    <div class="mainBox" v-loading="regLoading || loginLoading || forgetLoading">
         <el-container class="contentBox">
             <el-main class="contentElement contentPre" id="contentPre">
                 <RouterLink to="/home">
@@ -81,32 +80,51 @@
     </div>
 
     <!-- 忘记密码 -->
-    <div class="forgetBox" v-loading="forgetLoading">
+    <div class="forgetBox">
         <el-dialog v-model="forgetVisible" title="Reset Password" width="50%" :lock-scroll="lockScroll"
             :close-on-click-modal="closeOnClickModal" :destroy-on-close="DestroyOnClose" :show-close="showClose"
             :close-on-press-escape="closeOnPressEscape">
-            <section class="contentForm">
-                <el-form :label-position="labelPosition" :label-width="labelWidth2" :model="forgetForm"
-                    :style="formInlineStyle" ref="forgetFormRef" :rules="forgetRules" :size="formSize2"
+            <section class="contentForm" v-if="!forgetVerified">
+                <el-form :label-position="labelPosition" :label-width="labelWidth2" :model="forgetForm1"
+                    :style="formInlineStyle" ref="forgetFormRef1" :rules="forgetRules1" :size="formSize2"
                     :status-icon="statusIcon">
                     <el-form-item label="Email" prop="forgetEmail">
                         <el-input class="generalInput" ref="forgetFormEmailRef" name="forgetEmail"
-                            v-model="forgetForm.forgetEmail" placeholder="Please input email" />
+                            v-model="forgetForm1.forgetEmail" placeholder="Please input email" />
                     </el-form-item>
                     <el-form-item label="Code" prop="forgetCaptcha">
-                        <el-input class="captchaInput" name="forgetCaptcha" v-model="forgetForm.forgetCaptcha"
+                        <el-input class="captchaInput" name="forgetCaptcha" v-model="forgetForm1.forgetCaptcha"
                             placeholder="Verify code" :maxlength="lengthCaptcha" :minlength="lengthCaptcha" />
                         <el-button type="primary" :disabled="onForgetCold" @click="captchaAccess(1)">
                             {{ captchaForgetBtnInfo }}
                         </el-button>
                     </el-form-item>
+                </el-form>
+            </section>
+            <section class="contentForm" v-else>
+                <el-form :label-position="labelPosition" :label-width="labelWidth2" :model="forgetForm2"
+                    :style="formInlineStyle" ref="forgetFormRef2" :rules="forgetRules2" :size="formSize2"
+                    :status-icon="statusIcon">
+                    <el-form-item label="Email" prop="forgetEmail">
+                        <el-input class="generalInput" ref="forgetFormEmailRef" name="forgetEmail"
+                            v-model="forgetForm2.forgetEmail" placeholder="Please input email" :disabled="true"
+                            :value="forgetForm2.forgetEmail" />
+                    </el-form-item>
+                    <el-form-item label="Code" prop="forgetCaptcha">
+                        <el-input class="captchaInput" name="forgetCaptcha" v-model="forgetForm2.forgetCaptcha"
+                            placeholder="Verify code" :maxlength="lengthCaptcha" :minlength="lengthCaptcha" :disabled="true"
+                            :value="forgetForm2.forgetCaptcha" />
+                        <el-button type="primary" :disabled="true">
+                            {{ captchaForgetBtnInfo }}
+                        </el-button>
+                    </el-form-item>
                     <el-form-item label="New Password" prop="forgetPassword">
-                        <el-input class="generalInput" name="forgetPassword" v-model="forgetForm.forgetPassword"
+                        <el-input class="generalInput" name="forgetPassword" v-model="forgetForm2.forgetPassword"
                             placeholder="Please input your new password" :maxlength="maxLengthPassword"
                             :minlength="minLengthPassword" :show-password="showPassword" />
                     </el-form-item>
                     <el-form-item label="Confirm" prop="forgetCheckPassword">
-                        <el-input class="generalInput" name="forgetCheckPassword" v-model="forgetForm.forgetCheckPassword"
+                        <el-input class="generalInput" name="forgetCheckPassword" v-model="forgetForm2.forgetCheckPassword"
                             placeholder="Please confirm your password" :maxlength="maxLengthPassword"
                             :minlength="minLengthPassword" :show-password="showPassword" />
                     </el-form-item>
@@ -117,7 +135,10 @@
                     <el-button @click="closeForgetWindow()">
                         Cancel
                     </el-button>
-                    <el-button type="primary" @click="forgetSubmit(forgetFormRef)">
+                    <el-button type="primary" @click="forgetVerify(forgetFormRef1)" v-if="!forgetVerified">
+                        Verify
+                    </el-button>
+                    <el-button type="primary" @click="forgetSubmit(forgetFormRef2)" v-else>
                         Submit
                     </el-button>
                 </span>
@@ -135,21 +156,18 @@ import * as validation from '@/utils/formValidate';
 import * as auth from '@/api/auth';
 import * as opt from '@/utils/optimize';
 // import { useDark, useToggle } from '@vueuse/core'
-
 /** 获取路由实例 */
 const router = useRouter();
 /** 默认访问的表单 login/register */
 const mod = router.currentRoute.value.query.mod;
 /** 是否展示注册表单的布尔值 */
 let regFormShow = ref<Boolean>(false);
-
 /** contentPre的实例 */
 let pre = document.getElementById('contentPre') as HTMLElement;
 /** guideInfo的实例  */
 let info = document.getElementById('guideInfo') as HTMLElement;
 /** guideBtn的实例 */
 let btn = document.getElementById('guideBtn') as HTMLElement;
-
 /** Element Plus 标签吸附位置 */
 const labelPosition = ref<String>('left');
 /** Element Plus 标签长度 */
@@ -202,30 +220,28 @@ const onForgetCold = ref<Boolean>(false);
 const regCountdown = ref<Number>(60);
 /** 忘记密码获取验证码倒计时 */
 const forgetCountdown = ref<Number>(60);
-
 /** 获取验证码按钮内容 - 注册 */
 const captchaRegBtnInfo = ref<String>('Get Code');
 /** 获取验证码按钮内容 - 忘记密码 */
 const captchaForgetBtnInfo = ref<String>('Get Code');
-
-
 /** 登录表格实例 */
 const loginFormRef = ref<FormInstance>();
 /** 注册表格实例 */
 const regFormRef = ref<FormInstance>();
-/** 忘记密码表格实例 */
-const forgetFormRef = ref<FormInstance>();
-
+/** 忘记密码验证前表格实例 */
+const forgetFormRef1 = ref<FormInstance>();
+/** 忘记密码验证后表格实例 */
+const forgetFormRef2 = ref<FormInstance>();
+/** 忘记密码邮箱是否验证 */
+const forgetVerified = ref<Boolean>(false);
 /** 深色模式判定 */
 // const isDark = useDark()
 /** 深色模式触发 */
 // const toggleDark = useToggle(isDark)
-
 /** 登录表格监听 loginXXX */
 const loginForm = reactive({
     loginEmail: '',
     loginPassword: '',
-
 })
 /** 注册表格监听 regXXX*/
 const regForm = reactive({
@@ -235,14 +251,18 @@ const regForm = reactive({
     regUsername: '',
     regCaptcha: ''
 })
-/** 忘记密码表格监听 forgetXXX*/
-const forgetForm = reactive({
+/** 忘记密码验证前表格监听 forgetXXX*/
+const forgetForm1 = reactive({
+    forgetEmail: '',
+    forgetCaptcha: ''
+})
+/** 忘记密码验证后表格监听 forgetXXX*/
+const forgetForm2 = reactive({
     forgetEmail: '',
     forgetPassword: '',
     forgetCheckPassword: '',
     forgetCaptcha: ''
 })
-
 /** 登录表格校验监听 */
 const loginRules = reactive<FormRules>({
     loginEmail: [
@@ -322,8 +342,19 @@ const regRules = reactive<FormRules>({
         },
     ],
 })
-/** 注册表格校验监听 */
-const forgetRules = reactive<FormRules>({
+/** 注册表格验证前校验监听 */
+const forgetRules1 = reactive<FormRules>({
+    forgetEmail: [
+        { validator: validation.emailValidate, trigger: 'change' },
+        { validator: validation.emailValidate, trigger: 'blur' },
+    ],
+    forgetCaptcha: [
+        { validator: validation.captchaValidate, trigger: 'change' },
+        { validator: validation.captchaValidate, trigger: 'blur' },
+    ]
+})
+/** 注册表格验证后校验监听 */
+const forgetRules2 = reactive<FormRules>({
     forgetEmail: [
         { validator: validation.emailValidate, trigger: 'change' },
         { validator: validation.emailValidate, trigger: 'blur' },
@@ -336,12 +367,12 @@ const forgetRules = reactive<FormRules>({
         {
             validator: (rule, value, callback) => {
                 let checkWarn = new Boolean(false);
-                checkWarn = validation.passwordValidate(rule, value, callback, 'forget', forgetForm.forgetCheckPassword);
+                checkWarn = validation.passwordValidate(rule, value, callback, 'forget', forgetForm2.forgetCheckPassword);
                 if (checkWarn) {
-                    if (!forgetFormRef.value) {
+                    if (!forgetFormRef2.value) {
                         return;
                     }
-                    forgetFormRef.value.validateField('forgetCheckPassword', () => null);
+                    forgetFormRef2.value.validateField('forgetCheckPassword', () => null);
                 }
             },
             trigger: 'change'
@@ -349,12 +380,12 @@ const forgetRules = reactive<FormRules>({
         {
             validator: (rule, value, callback) => {
                 let checkWarn = new Boolean(false);
-                checkWarn = validation.passwordValidate(rule, value, callback, 'forget', forgetForm.forgetCheckPassword);
+                checkWarn = validation.passwordValidate(rule, value, callback, 'forget', forgetForm2.forgetCheckPassword);
                 if (checkWarn) {
-                    if (!forgetFormRef.value) {
+                    if (!forgetFormRef2.value) {
                         return;
                     }
-                    forgetFormRef.value.validateField('forgetCheckPassword', () => null);
+                    forgetFormRef2.value.validateField('forgetCheckPassword', () => null);
                 }
             },
             trigger: 'blur'
@@ -363,19 +394,18 @@ const forgetRules = reactive<FormRules>({
     forgetCheckPassword: [
         {
             validator: (rule, value, callback) => {
-                validation.passwordDoubleValidate(rule, value, callback, forgetForm.forgetPassword);
+                validation.passwordDoubleValidate(rule, value, callback, forgetForm2.forgetPassword);
             },
             trigger: 'change'
         },
         {
             validator: (rule, value, callback) => {
-                validation.passwordDoubleValidate(rule, value, callback, forgetForm.forgetPassword);
+                validation.passwordDoubleValidate(rule, value, callback, forgetForm2.forgetPassword);
             },
             trigger: 'blur'
         },
     ],
 })
-
 /**
  * 通体检查有效后向api发起登录请求
  * @param formEl 表实例
@@ -417,7 +447,6 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-
 /**
  * 通体检查有效后向api发起注册请求
  * @param formEl 表实例
@@ -457,7 +486,48 @@ const regSubmit = async (formEl: FormInstance | undefined) => {
         }
     })
 }
-
+/**
+ * 通体检查有效后向api发起忘记密码请求验证
+ * @param formEl 表实例
+ */
+const forgetVerify = async (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    await formEl.validate(async (valid) => {
+        if (valid) {
+            forgetLoading.value = true;
+            setTimeout(async () => {
+                opt.debounce(async () => {
+                    let res = await auth.forgetVerifyApi(forgetForm1);
+                    res = opt.formalizeRes(res);
+                    forgetLoading.value = false;
+                    if (!res) return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 1500
+                        })
+                        forgetForm2.forgetEmail = forgetForm1.forgetEmail;
+                        forgetForm2.forgetCaptcha = forgetForm1.forgetCaptcha;
+                        forgetVerified.value = true;
+                    }
+                    else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        })
+                    }
+                }, 1000, true);
+            }, 1000)
+        }
+        else {
+            return false;
+        }
+    })
+}
 /**
  * 通体检查有效后向api发起忘记密码请求
  * @param formEl 表实例
@@ -467,14 +537,37 @@ const forgetSubmit = async (formEl: FormInstance | undefined) => {
     await formEl.validate(async (valid) => {
         if (valid) {
             forgetLoading.value = true;
-            auth.forgetApi(forgetForm);
+            setTimeout(async () => {
+                opt.debounce(async () => {
+                    let res = await auth.forgetAllApi(forgetForm2);
+                    res = opt.formalizeRes(res);
+                    forgetLoading.value = false;
+                    if (!res) return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 1500
+                        })
+                        forgetVerified.value = false;
+                        location.href = '/auth?mod=log';
+                    } else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        })
+                    }
+                }, 1000, true);
+            }, 1000)
         }
         else {
             return false;
         }
     })
 }
-
 /**
  * 简单检查邮箱后向api发起邮箱验证请求
  * @param mod 参数，-1为注册用，1为找回密码用
@@ -490,7 +583,6 @@ const captchaAccess = async (mod: Number | undefined) => {
             return;
         }
         if (mod === -1) {
-            regLoading.value = false;
             if (regForm.regEmail === '' || !validation.emailReg.test(regForm.regEmail)) {
                 avail = false;
             }
@@ -499,8 +591,7 @@ const captchaAccess = async (mod: Number | undefined) => {
             }
         }
         if (mod === 1) {
-            forgetLoading.value = false;
-            if (forgetForm.forgetEmail === '' || !validation.emailReg.test(forgetForm.forgetEmail)) {
+            if (forgetForm1.forgetEmail === '' || !validation.emailReg.test(forgetForm1.forgetEmail)) {
                 avail = false;
             }
             else {
@@ -516,12 +607,15 @@ const captchaAccess = async (mod: Number | undefined) => {
                 position: 'top-right',
                 showClose: false
             });
+            regLoading.value = false;
+            forgetLoading.value = false;
         }
         else {
             setCountdown(mod);
             opt.debounce(async () => {
                 if (mod === -1) {
                     let res = await auth.emailAccessApi(regForm.regEmail);
+                    regLoading.value = false;
                     res = opt.formalizeRes(res);
                     console.log(res);
                     if (!res)
@@ -543,13 +637,32 @@ const captchaAccess = async (mod: Number | undefined) => {
                     }
                 }
                 if (mod === 1) {
-                    await auth.emailAccessApi(forgetForm.forgetEmail);
+                    let res = await auth.emailAccessApi(forgetForm1.forgetEmail);
+                    forgetLoading.value = false;
+                    res = opt.formalizeRes(res);
+                    console.log(res);
+                    if (!res)
+                        return;
+                    if (res['avail']) {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'success',
+                            duration: 2500
+                        });
+                    } else {
+                        ElMessage({
+                            showClose: true,
+                            message: res['msg'],
+                            type: 'error',
+                            duration: 1500
+                        });
+                    }
                 }
             }, 1000, true)
         }
     }, 1000)
 }
-
 /**
  * 转换表单框
  */
@@ -565,7 +678,6 @@ const switchEle = () => {
         pre.style.marginLeft = '50%';
     }
 }
-
 /**
  * 验证码倒计时
  * @param mod 参数，-1为注册用，1为找回密码用
@@ -597,15 +709,13 @@ const setCountdown = (mod: Number | undefined) => {
                 onForgetCold.value = false;
                 captchaForgetBtnInfo.value = "Get Code";
             }
-
         }
     }, 1000)
 }
-
 /** 关闭忘记密码模态框 */
 const closeForgetWindow = () => {
     forgetVisible.value = false;
-    Object.keys(forgetForm).forEach(key => {
+    Object.keys(forgetForm1).forEach(key => {
         /*
             ※ 在tsconfig.json中compilerOptions里加入"suppressImplicitAnyIndexErrors": true
             ※ 解决元素隐式具有 “any“ 类型，因为类型为 “string“ 的表达式不能用于索引类型 “Object“。 
@@ -613,14 +723,16 @@ const closeForgetWindow = () => {
             ※ 问题的原因是key值的类型不是string，在javascript中是默认给你转好的，
             ※ 而在Typescript中则不是，因此要么转，要么声明，要么忽略
         */
-        forgetForm[key] = '';
+        forgetForm1[key] = '';
     })
+    Object.keys(forgetForm2).forEach(key => {
+        forgetForm2[key] = '';
+    })
+    forgetVerified.value = false;
 }
-
 /*
     生命周期函数分隔
 */
-
 onMounted(() => {
     // 在挂载时就获取实例方便首次判断
     pre = document.getElementById('contentPre') as HTMLElement;
@@ -652,8 +764,6 @@ onMounted(() => {
         pre.style.marginLeft = '50%';
     }
 })
-
-
 </script>
 
 <style lang="scss" scoped>
