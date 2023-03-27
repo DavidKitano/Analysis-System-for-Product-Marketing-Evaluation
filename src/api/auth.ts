@@ -6,6 +6,7 @@ const authAxios = axios.create();
 
 authAxios.defaults.timeout = 20000;
 authAxios.defaults.headers.post["Content-Type"] = "multipart/form-data;charset=utf-8";
+authAxios.defaults.headers.put["Content-Type"] = "multipart/form-data;charset=utf-8";
 authAxios.defaults.baseURL = '/apis'
 // const BASE_URL = 'https://40f071780t.goho.co:443';
 
