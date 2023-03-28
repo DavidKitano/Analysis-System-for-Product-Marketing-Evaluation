@@ -1,3 +1,131 @@
-:deep(.el-card) {
-    width: 80%;
+:deep(.positionText) {
+    background-color: rgb(255, 255, 0);
+    padding: 1px 5px;
+}
+
+:deep(.claimText) {
+    background-color: rgb(210, 255, 168);
+    padding: 1px 5px;
+}
+
+:deep(.evidenceText) {
+    background-color: rgb(251, 205, 235);
+    padding: 1px 5px;
+}
+
+:deep(.defaultText) {
+    background-color: white;
+    padding: 1px 5px;
+}
+
+.textGap-1 {
+    margin-right: 1rem;
+}
+
+.textGap-05 {
+    margin-right: 0.5rem;
+}
+
+.el-upload {
+    z-index: 999998;
+}
+
+.biggerIcon {
+    font-size: larger;
+}
+
+.analyzerBox {
+    // border: solid 1px red;
+    width: 97.5%;
+    min-width: 440px;
+    min-height: 500px;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+    padding: 0 4rem;
+    box-shadow: 0.5rem 0.4rem 0.4rem 0.01rem rgba(0, 0, 0, 0.263);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background-color: white;
+
+    .tabInactive {
+        font-size: 1.15rem;
+        font-weight: 600;
+        box-sizing: border-box;
+        color: rgb(64, 158, 255);
+
+        &:hover {
+            cursor: pointer;
+            border-bottom: solid 1px rgb(64, 158, 255);
+        }
+    }
+
+    .tabActive {
+        font-size: 1.15rem;
+        font-weight: 600;
+        box-sizing: border-box;
+        color: black;
+    }
+
+    .analyzerBoxHeader {
+        box-sizing: border-box;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+    }
+
+    .el-text {
+        vertical-align: middle;
+    }
+
+    .el-switch,
+    .el-icon {
+        vertical-align: middle;
+    }
+
+    .analyzeBtnGroups {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .analyzerBoxResultHeader {
+        margin-bottom: 2rem;
+    }
+
+    .analyzerBoxResult {
+        margin-bottom: 6rem;
+
+        #sentimentalLabel {
+            text-align: left;
+            height: 280px;
+            width: max-content;
+            position: absolute;
+        }
+
+        #detailLabel {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .el-image {
+            margin-top: -0.75rem;
+            position: relative;
+        }
+
+        .image-slot {
+            text-align: center;
+        }
+
+        .resultDetailBox {
+            span {
+                text-indent: 4px;
+            }
+        }
+
+        h3 {
+            font-weight: 500;
+        }
+    }
 }

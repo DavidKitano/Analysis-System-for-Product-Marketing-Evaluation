@@ -26,9 +26,20 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-
+  base: process.env.NODE_ENV === 'production' ? './' : '/',
+  build: {
+    target: 'es2015',
+    outDir: 'dist',
+    sourcemap: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
+  },
   server: {
-    base: '/',
+    base: process.env.NODE_ENV === 'production' ? './' : '/',
     host: 'localhost',
     port: 5173,
     open: true,

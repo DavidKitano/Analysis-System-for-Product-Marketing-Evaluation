@@ -426,10 +426,10 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'success',
-                            duration: 1500
+                            duration: 2500
                         })
                         // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
-                        sessionStorage.setItem('username', res['data']);
+                        sessionStorage.setItem('username', String(res['data']));
                         sessionStorage.setItem('id', loginForm.loginEmail);
                         location.href = '/home';
                     } else {
@@ -437,7 +437,7 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         })
                     }
                 }, 1000, true);
@@ -468,7 +468,7 @@ const regSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'success',
-                            duration: 1500
+                            duration: 2500
                         })
                         location.href = '/auth?mod=log';
                     } else {
@@ -476,7 +476,7 @@ const regSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         })
                     }
                 }, 1000, true);
@@ -507,7 +507,7 @@ const forgetVerify = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'success',
-                            duration: 1500
+                            duration: 2500
                         })
                         forgetForm2.forgetEmail = forgetForm1.forgetEmail;
                         forgetForm2.forgetCaptcha = forgetForm1.forgetCaptcha;
@@ -518,7 +518,7 @@ const forgetVerify = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         })
                     }
                 }, 1000, true);
@@ -549,7 +549,7 @@ const forgetSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'success',
-                            duration: 1500
+                            duration: 2500
                         })
                         forgetVerified.value = false;
                         location.href = '/auth?mod=log';
@@ -558,7 +558,7 @@ const forgetSubmit = async (formEl: FormInstance | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         })
                     }
                 }, 1000, true);
@@ -633,7 +633,7 @@ const captchaAccess = async (mod: Number | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         });
                     }
                 }
@@ -656,7 +656,7 @@ const captchaAccess = async (mod: Number | undefined) => {
                             showClose: true,
                             message: res['msg'],
                             type: 'error',
-                            duration: 1500
+                            duration: 2500
                         });
                     }
                 }

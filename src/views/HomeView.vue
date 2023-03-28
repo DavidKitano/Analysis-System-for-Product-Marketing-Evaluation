@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import generalHeader from '@/components/generalHeader.vue';
-import analyzerBox from '@/components/analyzerBox.vue';
+// 在tsconfig.json里已经导入
+// import generalHeader from '@/components/generalHeader.vue';
+// import analyzerBox from '@/components/analyzerBox.vue';
 </script>
 
 <template>
@@ -14,4 +15,13 @@ import analyzerBox from '@/components/analyzerBox.vue';
       </el-main>
     </el-container>
   </main>
+
+  <el-backtop :bottom="100">
+    <div class="backTop">
+      <el-icon>
+        <CaretTop />
+      </el-icon>UP
+    </div>
+  </el-backtop>
 </template>
+

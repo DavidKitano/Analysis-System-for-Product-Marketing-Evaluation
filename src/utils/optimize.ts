@@ -1,15 +1,28 @@
+import { ElMessage } from 'element-plus'
+
 /** 防抖计时器 */
 let debounceTimer: any;
 /** 在立即触发后的一个布尔量指示是否进入防抖路径而非立即路径 */
 let debounceInterrupt: boolean;
+
 /** 错误结果对象 */
 export const errRes = {
-    httpStatusCode: '200',
-    code: '500',
-    data: '',
-    msg: 'Error occurred!',
-    type: 'error',
-    avail: false
+    data: {
+        httpStatusCode: '500',
+        code: '500',
+        data: '',
+        message: 'Internal error occurred, please contact administrators!',
+        type: 'error',
+        avail: false
+    }
+}
+
+/**
+ * 开发中提示
+ */
+export const underConstruction = () => {
+    ElMessage.warning('Under construction');
+    console.warn('该组件为非主要功能，仍在开发调试中');
 }
 
 /**

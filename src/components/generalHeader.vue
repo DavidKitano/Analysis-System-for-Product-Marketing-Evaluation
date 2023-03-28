@@ -26,21 +26,35 @@
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>Change Username</el-dropdown-item>
-                        <el-dropdown-item>Change Password</el-dropdown-item>
+                        <el-dropdown-item @click="opt.underConstruction">Change Username</el-dropdown-item>
+                        <el-dropdown-item @click="opt.underConstruction">Change Password</el-dropdown-item>
                         <el-divider></el-divider>
-                        <el-dropdown-item @click="logout();">Log Out</el-dropdown-item>
+                        <el-dropdown-item @click="{ dialogVisible = true; }">
+                            Log Out
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
             </el-dropdown>
         </section>
     </section>
+
+    <el-dialog v-model="dialogVisible" title="Confirmation" width="30%" :show-close="false">
+        <span>Are you sure to log out?</span>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="logout();">
+                    Confirm
+                </el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup lang="ts">
 // import { useMainStore } from '@/stores'
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import * as opt from '@/utils/optimize'
 import * as auth from '@/api/auth'
 
@@ -52,7 +66,12 @@ if (usernameSession) {
     isLogin.value = true;
 }
 
+const dialogVisible = ref(false)
+
 const logout = async () => {
+    if (dialogVisible.value) {
+        dialogVisible.value = false;
+    }
     fullscreenLoading.value = true;
     setTimeout(async () => {
         opt.debounce(async () => {
@@ -66,7 +85,7 @@ const logout = async () => {
                     showClose: true,
                     message: res['msg'],
                     type: 'success',
-                    duration: 1500
+                    duration: 2500
                 })
                 // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
                 sessionStorage.clear();
@@ -76,7 +95,7 @@ const logout = async () => {
                     showClose: true,
                     message: res['msg'],
                     type: 'error',
-                    duration: 1500
+                    duration: 2500
                 })
             }
         }, 1000, true);

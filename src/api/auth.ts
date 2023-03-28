@@ -27,6 +27,7 @@ export async function loginApi(loginForm: Object) {
         _res = res;
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -53,6 +54,7 @@ export async function logoutApi() {
 
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -76,6 +78,7 @@ export async function regApi(regForm: Object) {
         _res = res;
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -94,9 +97,11 @@ export async function forgetVerifyApi(forgetForm: Object) {
             captcha: forgetForm['forgetCaptcha']
         }
     }).then(res => {
+        console.log(res);
         _res = res;
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -108,7 +113,7 @@ export async function forgetAllApi(forgetForm: Object) {
     }
     let _res;
     await authAxios({
-        method: 'POST',
+        method: 'PUT',
         url: url + '',
         data: {
             email: forgetForm['forgetEmail'],
@@ -117,9 +122,11 @@ export async function forgetAllApi(forgetForm: Object) {
             password_confirm: forgetForm['forgetCheckPassword']
         }
     }).then(res => {
+        console.log(res);
         _res = res;
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -140,6 +147,7 @@ export async function emailAccessApi(email: String) {
         _res = res
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }
@@ -162,6 +170,7 @@ export async function changeUsernameApi(name: String) {
         _res = res
     }).catch(err => {
         console.error(err);
+        _res = opt.errRes;
     });
     return _res;
 }

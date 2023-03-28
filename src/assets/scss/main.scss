@@ -10,9 +10,27 @@
     -webkit-box-sizing: border-box;
     -o-box-sizing: border-box;
     -ms-box-sizing: border-box;
-    background-color: rgb(246, 248, 252)
+    // background-color: rgba(246, 248, 252);
+    background-color: rgb(238, 241, 249);
 }
 
 .el-loading-mask {
     z-index: 9999999;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.backTop {
+    height: 100%;
+    width: 100%;
+    background-color: var(--el-bg-color-overlay);
+    box-shadow: var(--el-box-shadow-lighter);
+    border-radius: 100%;
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 40px;
+    color: #1989fa;
 }
