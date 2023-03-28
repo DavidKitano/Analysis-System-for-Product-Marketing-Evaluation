@@ -54,7 +54,7 @@
 <script setup lang="ts">
 // import { useMainStore } from '@/stores'
 import { ref } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import * as opt from '@/utils/optimize'
 import * as auth from '@/api/auth'
 

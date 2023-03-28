@@ -111,11 +111,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { reactive, ref } from 'vue';
 import { InfoFilled, StarFilled, UploadFilled, Finished } from '@element-plus/icons-vue'
-import * as analyzer from '@/api/analyzer';
-import { reject } from 'lodash';
 import * as up from '@/utils/upload'
 import loveUrl from '../assets/images/love.svg'
 import indifferentUrl from '../assets/images/indifferent.svg'
@@ -190,10 +187,6 @@ const changeTab = (param: any) => {
     }
 }
 
-const detailExpand = () => {
-    const box = document.getElementById('resultDetailBox');
-    box?.removeAttribute('truncated');
-}
 
 </script>
 

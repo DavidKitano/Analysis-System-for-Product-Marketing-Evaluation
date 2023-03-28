@@ -6,9 +6,6 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import * as validation from '@/utils/formValidate';
-import * as auth from '@/api/auth';
-import * as opt from '@/utils/optimize';
 
 /*
     生命周期函数分隔
