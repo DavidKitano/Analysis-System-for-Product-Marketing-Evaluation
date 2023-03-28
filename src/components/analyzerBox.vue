@@ -117,6 +117,9 @@ import { InfoFilled, StarFilled, UploadFilled, Finished } from '@element-plus/ic
 import * as analyzer from '@/api/analyzer';
 import { reject } from 'lodash';
 import * as up from '@/utils/upload'
+import loveUrl from '../assets/images/love.svg'
+import indifferentUrl from '../assets/images/indifferent.svg'
+import sadUrl from '../assets/images/sad.svg'
 
 const tips = ref<String>('Height: To adjust the height of article box.  /   Article Lock: To (un)lock the status of article to make it (un)available to edit.');
 const articleMod = ref<Boolean>(true);
@@ -130,9 +133,9 @@ const uploadMethod = ref<String>("POST");
 const uploadAvail = ref<Boolean>(false);
 const sentimentalIndex = ref<number>(0);
 const sentimentalUrl = reactive([
-    '../assets/images/love.svg',
-    '../assets/images/indifferent.svg',
-    '../assets/images/sad.svg'
+    loveUrl,
+    indifferentUrl,
+    sadUrl
 ])
 const sentimentalText = reactive(['Positive', 'Neutral', 'Negative']);
 
