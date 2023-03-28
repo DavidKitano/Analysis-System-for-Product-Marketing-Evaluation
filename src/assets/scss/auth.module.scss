@@ -86,6 +86,10 @@
             z-index: 2;
             background-color: rgba(64, 109, 165, 0.8);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(8px);
+            -o-backdrop-filter: blur(10px);
+            -moz-backdrop-filter: blur(10px);
+            -ms-backdrop-filter: blur(10px);
             transition-duration: 1s;
             -webkit-transition-duration: 1s;
             -o-transition-duration: 1s;
