@@ -7,22 +7,24 @@ import pinia from '@/stores/';
 const store = useMainStore(pinia);
 const anaAxios = axios.create();
 
-anaAxios.defaults.timeout = 20000;
+anaAxios.defaults.timeout = 2147483646;
 anaAxios.defaults.headers.post["Content-Type"] = "multipart/form-data;charset=utf-8";
 anaAxios.defaults.baseURL = '/apis';
 
 export async function textAnalyzeApi(text: String) {
-    const url = opt.timestamp('');
+    const url = opt.timestamp('/auth/argmin');
     if (!text || !store.loginStatus)
         return opt.errRes;
     let _res;
     await anaAxios({
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         url: url + '',
-        data: {
-
-        }
+        data: text
     }).then(res => {
+        console.log(res);
         _res = res;
     }).catch(err => {
         console.error(err);
@@ -32,7 +34,7 @@ export async function textAnalyzeApi(text: String) {
 }
 
 export async function fileAnalyzeApi(data: FormData) {
-    const url = opt.timestamp('');
+    const url = opt.timestamp('/auth/upload');
     if (!data || !store.loginStatus)
         return opt.errRes;
     let _res;

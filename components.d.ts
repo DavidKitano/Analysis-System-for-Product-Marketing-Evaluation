@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AnalyzerBox: typeof import('./src/components/AnalyzerBox.vue')['default']
     DetailResult: typeof import('./src/components/DetailResult.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElButtonGroup: typeof import('element-plus/es')['ElButtonGroup']

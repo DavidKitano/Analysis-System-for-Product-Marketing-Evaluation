@@ -48,7 +48,7 @@ export const resShowSuccess = (response: any, uploadFile: any, uploadFiles: any)
 
 export const formalizeDetailRes = (data: any) => {
     const res = {
-        text: data.tagging_text,
+        text: data.tagging_text ? undefined : data.data.tagging_text,
         sentimentalIndex: 0
     };
     switch (data.sentimental) {

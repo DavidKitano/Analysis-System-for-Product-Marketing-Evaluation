@@ -10,6 +10,19 @@
     z-index: 999998;
 }
 
+:deep(.el-alert) {
+    margin-top: 2rem;
+    margin-bottom: -1rem;
+    display: flex;
+    align-items: center;
+}
+
+:deep(.el-alert__content) {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
 .biggerIcon {
     font-size: larger;
     color: rgb(94, 94, 94);

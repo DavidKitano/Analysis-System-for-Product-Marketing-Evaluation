@@ -5,7 +5,7 @@
             <h4>～Analysis System for Product Marketing Evaluation～</h4>
         </section>
 
-        <el-button-group v-if="!store.loginStatus">
+        <el-button-group v-if="!isLogin">
             <el-button type="primary">
                 <RouterLink to="/auth">
                     Login
@@ -18,7 +18,7 @@
             </el-button>
         </el-button-group>
 
-        <section v-if="store.loginStatus" id="userBar">
+        <section v-if="isLogin" id="userBar">
             <h3>Welcome, {{ usernameSession }} </h3>
             <el-dropdown>
                 <el-button type="primary">
@@ -66,7 +66,9 @@ const fullscreenLoading = ref<Boolean>(false);
 // const usernameStored = useMainStore().username;
 const usernameSession = sessionStorage.getItem('username');
 const isLogin = ref<Boolean>(false)
-if (usernameSession && store.loginStatus) {
+if (usernameSession
+    //&& store.loginStatus
+) {
     isLogin.value = true;
 }
 

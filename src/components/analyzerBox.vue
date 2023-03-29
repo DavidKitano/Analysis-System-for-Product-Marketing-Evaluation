@@ -1,6 +1,9 @@
 <template>
     <section class="analyzerBox el-main">
         <section>
+            <el-alert
+                title="This page is built for PC views. Before we finish some adaption for mobile phone views, please use a modern computer browser to access this page."
+                type="warning" center show-icon />
             <el-space class="analyzerBoxHeader">
                 <el-text id="textInput" class="tabActive" @click="changeTab('-1')">
                     <el-icon>
@@ -48,11 +51,10 @@
             </el-row>
         </section>
         <section v-else v-loading="analyzeLoading">
-            <el-upload class="uploadFile" :drag="true" :accept="acceptFile" :limit="1" :action="uploadUrl"
-                :method="uploadMethod" :with-credentials="true" :show-file-list="true" :auto-upload="false"
-                :on-change="checkFile" :on-error="up.resShowErr" :on-success="up.resShowSuccess"
-                :on-remove="function () { uploadAvail = false; }" ref="upload" :on-exceed="handleExceed"
-                :file-list="fileList" :http-request="fileAnalyze">
+            <el-upload class="uploadFile" :drag="true" :accept="acceptFile" :limit="1" :method="uploadMethod"
+                :with-credentials="true" :show-file-list="true" :auto-upload="false" :on-change="checkFile"
+                :on-error="up.resShowErr" :on-success="up.resShowSuccess" :on-remove="function () { uploadAvail = false; }"
+                ref="upload" :on-exceed="handleExceed" :file-list="fileList" :http-request="fileAnalyze">
                 <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                 <div class="el-upload__text">
                     Drop file here or <em>click to upload</em>
@@ -110,7 +112,7 @@
                         <el-divider direction="vertical" />
                         <span class="rebuttalText">Rebuttal</span>
                         <el-divider direction="vertical" />
-                        <span class="defaultText">Irrelevant</span>
+                        <span class="defaultText">Irrelevant contents have been filtered</span>
                     </div>
                 </template>
                 <el-text class="resultDetailBox" id="resultDetailBox">
@@ -137,6 +139,7 @@ import pinia from '@/stores/';
 
 /** Pinia存储 */
 const store = useMainStore(pinia);
+const usernameSession = sessionStorage.getItem('username');
 const tips = ref<String>('Height: To adjust the height of article box.  /   Article Lock: To (un)lock the status of article to make it (un)available to edit.');
 const articleMod = ref<Boolean>(true);
 const articleText = ref<String>('');
@@ -156,11 +159,11 @@ const sentimentalUrl = reactive([
 const sentimentalText = reactive(['Positive', 'Neutral', 'Negative']);
 const upload = ref<UploadInstance>()
 let detailResult = reactive({
-    data: [['Claim', 5], ['Position', 47]],
-    isExisted: true
+    data: [],
+    isExisted: false
 });
 const analyzeLoading = ref<Boolean>(false);
-let fileList: any[];
+let fileList = reactive([]);
 
 /**
  * 获取update.ts中checkFile的返回值用的中间函数
@@ -218,7 +221,10 @@ const changeTab = (param: any) => {
 }
 
 const textAnalyze = (text: string) => {
-    if (!store.loginStatus) {
+    // console.log(store.loginStatus)
+    if (!usernameSession
+        // && !store.loginStatus
+    ) {
         ElMessage.error('Please login first!');
         return;
     }
@@ -227,10 +233,14 @@ const textAnalyze = (text: string) => {
         return;
     }
     analyzeLoading.value = true;
+    detailResult.data = [];
+    detailResult.isExisted = false;
+    sentimentalIndex.value = 0;
     setTimeout(async () => {
         opt.debounce(async () => {
             let res = await ana.textAnalyzeApi(text);
             res = opt.formalizeRes(res);
+            console.log('中间件', res);
             analyzeLoading.value = false;
             if (!res) return;
             if (res['avail']) {
@@ -240,9 +250,10 @@ const textAnalyze = (text: string) => {
                     type: 'success',
                     duration: 2500
                 });
+
                 detailResult.isExisted = true;
                 detailResult.data = up.formalizeDetailRes(res).text;
-                sentimentalIndex.value = up.formalizeDetailRes(res).sentimentalIndex
+                sentimentalIndex.value = up.formalizeDetailRes(res).sentimentalIndex;
             } else {
                 ElMessage({
                     showClose: true,
@@ -256,7 +267,9 @@ const textAnalyze = (text: string) => {
 }
 
 const fileAnalyze = () => {
-    if (!store.loginStatus) {
+    if (!usernameSession
+        // &&!store.loginStatus
+    ) {
         ElMessage.error('Please login first!');
         return;
     }
@@ -265,8 +278,11 @@ const fileAnalyze = () => {
     if (!fileList) {
         return;
     }
-    formData.append("file", fileList[0].raw);
+    formData.append("file", fileList[0]);
     analyzeLoading.value = true;
+    detailResult.data = [];
+    detailResult.isExisted = false;
+    sentimentalIndex.value = 0;
     setTimeout(async () => {
         opt.debounce(async () => {
             let res = await ana.fileAnalyzeApi(formData);
