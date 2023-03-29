@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { useMainStore } from '@/stores/user';
+import pinia from '@/stores/';
+const store = useMainStore(pinia);
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +40,8 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  const store = useMainStore(pinia);
+
   if (to.meta.title) {
     document.title = String(to.meta.title);
   }

@@ -1,7 +1,10 @@
 import * as opt from '@/utils/optimize';
 import axios from 'axios';
-// import _ from 'lodash';
+import { useMainStore } from '@/stores/user';
+import pinia from '@/stores/';
 
+/** Pinia存储 */
+const store = useMainStore(pinia);
 const authAxios = axios.create();
 
 authAxios.defaults.timeout = 20000;

@@ -17,7 +17,7 @@
                 </el-text>
             </el-space>
         </section>
-        <section v-if="articleMod">
+        <section v-if="articleMod" v-loading="analyzeLoading">
             <div class="slider-block">
                 <el-text>Height</el-text>
                 <el-divider direction="vertical" />
@@ -36,35 +36,39 @@
                     placeholder="Please input the article." maxlength="6000" show-word-limit resize="none" />
             </el-form>
             <el-row class="analyzeBtnGroups">
-                <el-button type="primary">Analyze</el-button>
+                <el-button type="primary" :disabled="!articleText"
+                    @click="textAnalyze(String(articleText))">Analyze</el-button>
                 <el-popconfirm width="220" confirm-button-text="OK" cancel-button-text="No, Thanks" :icon="InfoFilled"
-                    icon-color="#626AEF" title="Confirm to clear all?" @confirm="articleClear()">
+                    icon-color="#626AEF" title="Confirm to clear all?" @confirm="articleClear()" :disabled="articleLock"
+                    v-if="articleText">
                     <template #reference>
-                        <el-button type="danger">Clear</el-button>
+                        <el-button type="danger" :disabled="articleLock">Clear</el-button>
                     </template>
                 </el-popconfirm>
             </el-row>
         </section>
-        <section v-else>
+        <section v-else v-loading="analyzeLoading">
             <el-upload class="uploadFile" :drag="true" :accept="acceptFile" :limit="1" :action="uploadUrl"
                 :method="uploadMethod" :with-credentials="true" :show-file-list="true" :auto-upload="false"
                 :on-change="checkFile" :on-error="up.resShowErr" :on-success="up.resShowSuccess"
-                :on-remove="function () { uploadAvail = false; }">
+                :on-remove="function () { uploadAvail = false; }" ref="upload" :on-exceed="handleExceed"
+                :file-list="fileList" :http-request="fileAnalyze">
                 <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                 <div class="el-upload__text">
                     Drop file here or <em>click to upload</em>
                 </div>
                 <template #tip>
                     <div class="el-upload__tip">
-                        Single ".txt" file with a size less than 1 MB is available
+                        ※ Single ".txt" file with a size less than 1 MB is available. <br />
+                        ※ Only 1 file allowed, new file will cover the old file.
                     </div>
                 </template>
             </el-upload>
             <el-row class="analyzeBtnGroups">
-                <el-button type="primary" :disabled="!uploadAvail">Upload & Analyze</el-button>
+                <el-button type="primary" :disabled="!uploadAvail" @click="fileAnalyze()">Upload & Analyze</el-button>
             </el-row>
         </section>
-        <section class="analyzerBoxResultHeader">
+        <section class="analyzerBoxResultHeader" v-if="detailResult.isExisted">
             <el-divider>
                 <el-icon><star-filled /></el-icon>
             </el-divider>
@@ -75,9 +79,9 @@
                 Analysis
             </el-text>
         </section>
-        <section class="analyzerBoxResult">
+        <section class="analyzerBoxResult" v-if="detailResult.isExisted">
             <h3 id="sentimentalLabel">Sentimental:</h3>
-            <el-image :src="getIcon(sentimentalUrl[sentimentalIndex])" fit="fill" style="width: 280px; height: 50px">
+            <el-image :src="opt.getIcon(sentimentalUrl[sentimentalIndex])" fit="fill" style="width: 280px; height: 50px">
                 <template #error>
                     <div class="image-slot">
                         <div class="image-slot">{{ sentimentalText[sentimentalIndex] }}</div>
@@ -85,39 +89,54 @@
                 </template>
                 <template #placeholder>
                     <div class="image-slot">Loading<span class="dot">...</span></div>
-                </template>s
+                </template>
             </el-image>
 
             <h3 id="detailLabel">Detail:</h3>
             <el-card class="box-card">
                 <template #header>
                     <div class="card-header">
-                        <span class="positionText">Position</span>
-                        <el-divider direction="vertical" />
                         <span class="claimText">Claim</span>
                         <el-divider direction="vertical" />
                         <span class="evidenceText">Evidence</span>
+                        <el-divider direction="vertical" />
+                        <span class="positionText">Position</span>
+                        <el-divider direction="vertical" />
+                        <span class="concluding_StatementText">Concluding Statement</span>
+                        <el-divider direction="vertical" />
+                        <span class="leadText">Lead</span>
+                        <el-divider direction="vertical" />
+                        <span class="counterclaimText">Counterclaim</span>
+                        <el-divider direction="vertical" />
+                        <span class="rebuttalText">Rebuttal</span>
                         <el-divider direction="vertical" />
                         <span class="defaultText">Irrelevant</span>
                     </div>
                 </template>
                 <el-text class="resultDetailBox" id="resultDetailBox">
-                    <DetailResult></DetailResult>
+                    <DetailResult :data="toRaw(detailResult.data)"></DetailResult>
                 </el-text>
             </el-card>
         </section>
-
     </section>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { InfoFilled, StarFilled, UploadFilled, Finished } from '@element-plus/icons-vue'
-import * as up from '@/utils/upload'
-import loveUrl from '../assets/images/love.svg'
-import indifferentUrl from '../assets/images/indifferent.svg'
-import sadUrl from '../assets/images/sad.svg'
+import { reactive, ref, toRaw } from 'vue';
+import { ElMessage, genFileId } from 'element-plus';
+import type { UploadInstance, UploadProps, UploadRawFile } from 'element-plus';
+import { InfoFilled, StarFilled, UploadFilled, Finished } from '@element-plus/icons-vue';
+import * as up from '@/utils/upload';
+import * as opt from '@/utils/optimize';
+import * as ana from '@/api/analyzer';
+import loveUrl from '../assets/images/love.svg';
+import indifferentUrl from '../assets/images/indifferent.svg';
+import sadUrl from '../assets/images/sad.svg';
+import { useMainStore } from '@/stores/user';
+import pinia from '@/stores/';
 
+/** Pinia存储 */
+const store = useMainStore(pinia);
 const tips = ref<String>('Height: To adjust the height of article box.  /   Article Lock: To (un)lock the status of article to make it (un)available to edit.');
 const articleMod = ref<Boolean>(true);
 const articleText = ref<String>('');
@@ -135,14 +154,13 @@ const sentimentalUrl = reactive([
     sadUrl
 ])
 const sentimentalText = reactive(['Positive', 'Neutral', 'Negative']);
-
-/**
- * Vite获取静态文件
- * @param url 静态文件地址
- */
-const getIcon = (url: string) => {
-    return new URL(url, import.meta.url).href;
-}
+const upload = ref<UploadInstance>()
+let detailResult = reactive({
+    data: [['Claim', 5], ['Position', 47]],
+    isExisted: true
+});
+const analyzeLoading = ref<Boolean>(false);
+let fileList: any[];
 
 /**
  * 获取update.ts中checkFile的返回值用的中间函数
@@ -151,6 +169,16 @@ const getIcon = (url: string) => {
  */
 const checkFile = (uploadFile: any, uploadFiles: any) => {
     uploadAvail.value = up.checkFile(uploadFile, uploadFiles);
+}
+
+/**
+ * 监听上传文件的覆盖情况
+ */
+const handleExceed: UploadProps['onExceed'] = (files) => {
+    upload.value!.clearFiles()
+    const file = files[0] as UploadRawFile
+    file.uid = genFileId()
+    upload.value!.handleStart(file)
 }
 
 /**
@@ -173,13 +201,15 @@ const changeTab = (param: any) => {
         text?.classList.add('tabInactive');
         file?.classList.remove('tabInactive');
         file?.classList.add('tabActive');
-
     }
     else if (param == "-1") {
         text?.classList.remove('tabInactive');
         text?.classList.add('tabActive');
         file?.classList.remove('tabActive');
         file?.classList.add('tabInactive');
+        if (!articleLock.value) {
+            articleClear();
+        }
         articleMod.value = true;
     }
     else {
@@ -187,9 +217,87 @@ const changeTab = (param: any) => {
     }
 }
 
+const textAnalyze = (text: string) => {
+    if (!store.loginStatus) {
+        ElMessage.error('Please login first!');
+        return;
+    }
+    if (!text) {
+        ElMessage.error('Please input text!');
+        return;
+    }
+    analyzeLoading.value = true;
+    setTimeout(async () => {
+        opt.debounce(async () => {
+            let res = await ana.textAnalyzeApi(text);
+            res = opt.formalizeRes(res);
+            analyzeLoading.value = false;
+            if (!res) return;
+            if (res['avail']) {
+                ElMessage({
+                    showClose: true,
+                    message: res['msg'],
+                    type: 'success',
+                    duration: 2500
+                });
+                detailResult.isExisted = true;
+                detailResult.data = up.formalizeDetailRes(res).text;
+                sentimentalIndex.value = up.formalizeDetailRes(res).sentimentalIndex
+            } else {
+                ElMessage({
+                    showClose: true,
+                    message: res['msg'],
+                    type: 'error',
+                    duration: 2500
+                });
+            }
+        }, 1000, true);
+    }, 1000)
+}
 
+const fileAnalyze = () => {
+    if (!store.loginStatus) {
+        ElMessage.error('Please login first!');
+        return;
+    }
+    // upload.value!.submit();
+    let formData = new FormData();
+    if (!fileList) {
+        return;
+    }
+    formData.append("file", fileList[0].raw);
+    analyzeLoading.value = true;
+    setTimeout(async () => {
+        opt.debounce(async () => {
+            let res = await ana.fileAnalyzeApi(formData);
+            res = opt.formalizeRes(res);
+            analyzeLoading.value = false;
+            if (!res) return;
+            if (res['avail']) {
+                ElMessage({
+                    showClose: true,
+                    message: res['msg'],
+                    type: 'success',
+                    duration: 2500
+                });
+                detailResult.isExisted = true;
+                detailResult.data = up.formalizeDetailRes(res).text;
+                sentimentalIndex.value = up.formalizeDetailRes(res).sentimentalIndex
+            } else {
+                ElMessage({
+                    showClose: true,
+                    message: res['msg'],
+                    type: 'error',
+                    duration: 2500
+                });
+            }
+        }, 1000, true);
+    }, 1000)
+}
 </script>
 
 <style scoped lang="scss">
 @import '../assets/scss/analyzer.module.scss';
+
+@import '../assets/scss/sentimental_category.scss';
 </style>

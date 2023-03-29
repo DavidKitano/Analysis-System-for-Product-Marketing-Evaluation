@@ -1,0 +1,48 @@
+:deep(.claimText),
+:deep(.ClaimText) {
+    background-color: rgba(255, 110, 110, 0.875);
+    padding: 1px 5px;
+}
+
+:deep(.evidenceText),
+:deep(.EvidenceText) {
+    background-color: rgb(248, 196, 156);
+    padding: 1px 5px;
+}
+
+:deep(.positionText),
+:deep(.PositionText) {
+    background-color: rgb(255, 255, 0);
+    padding: 1px 5px;
+}
+
+:deep(.Concluding_StatementText),
+:deep(.concluding_StatementText) {
+    background-color: rgb(210, 255, 168);
+    padding: 1px 5px;
+}
+
+:deep(.LeadText),
+:deep(.leadText) {
+    background-color: rgb(176, 252, 213);
+    padding: 1px 5px;
+}
+
+:deep(.CounterclaimText),
+:deep(.counterclaimText) {
+    background-color: rgb(168, 225, 255);
+    padding: 1px 5px;
+}
+
+:deep(.RebuttalText),
+:deep(.rebuttalText) {
+    background-color: rgb(240, 168, 252);
+    padding: 1px 5px;
+}
+
+
+:deep(.defaultText),
+:deep(.DefaultText) {
+    background-color: white;
+    padding: 1px 5px;
+}

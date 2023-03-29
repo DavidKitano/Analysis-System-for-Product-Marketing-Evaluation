@@ -155,7 +155,11 @@ import { useRouter } from "vue-router";
 import * as validation from '@/utils/formValidate';
 import * as auth from '@/api/auth';
 import * as opt from '@/utils/optimize';
+import { useMainStore } from '@/stores/user';
+import pinia from '@/stores/';
 // import { useDark, useToggle } from '@vueuse/core'
+/** Pinia存储 */
+const store = useMainStore(pinia);
 /** 获取路由实例 */
 const router = useRouter();
 /** 默认访问的表单 login/register */
@@ -430,7 +434,10 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
                         })
                         // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
                         sessionStorage.setItem('username', String(res['data']));
+                        store.setUsername(String(res['data']));
                         sessionStorage.setItem('id', loginForm.loginEmail);
+                        store.setId(loginForm.loginEmail);
+                        store.setLoginStatus(true);
                         location.href = '/home';
                     } else {
                         ElMessage({

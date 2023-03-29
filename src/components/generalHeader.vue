@@ -5,7 +5,7 @@
             <h4>～Analysis System for Product Marketing Evaluation～</h4>
         </section>
 
-        <el-button-group v-if="!isLogin">
+        <el-button-group v-if="!store.loginStatus">
             <el-button type="primary">
                 <RouterLink to="/auth">
                     Login
@@ -18,7 +18,7 @@
             </el-button>
         </el-button-group>
 
-        <section v-if="isLogin" id="userBar">
+        <section v-if="store.loginStatus" id="userBar">
             <h3>Welcome, {{ usernameSession }} </h3>
             <el-dropdown>
                 <el-button type="primary">
@@ -57,12 +57,16 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as opt from '@/utils/optimize'
 import * as auth from '@/api/auth'
+import { useMainStore } from '@/stores/user';
+import pinia from '@/stores/';
 
+/** Pinia存储 */
+const store = useMainStore(pinia);
 const fullscreenLoading = ref<Boolean>(false);
 // const usernameStored = useMainStore().username;
 const usernameSession = sessionStorage.getItem('username');
 const isLogin = ref<Boolean>(false)
-if (usernameSession) {
+if (usernameSession && store.loginStatus) {
     isLogin.value = true;
 }
 
@@ -89,6 +93,9 @@ const logout = async () => {
                 })
                 // 正常情况下应该localStorage存token，由于项目时间紧、该部分不是着重点以及与后端的沟通本处采用session
                 sessionStorage.clear();
+                store.setUsername('');
+                store.setId('');
+                store.setLoginStatus(false);
                 location.href = '/home';
             } else {
                 ElMessage({

@@ -26,6 +26,14 @@ export const underConstruction = () => {
 }
 
 /**
+ * Vite获取静态文件
+ * @param url 静态文件地址
+ */
+export const getIcon = (url: string) => {
+    return new URL(url, import.meta.url).href;
+}
+
+/**
  * 手写防抖函数
  * @param fn 函数
  * @param delay 延迟

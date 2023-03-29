@@ -17,6 +17,8 @@ import "element-plus/theme-chalk/el-notification.css";
 import "element-plus/theme-chalk/el-message-box.css";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+import pinia from "@/stores/user";
+
 const app = createApp(App)
 
 app.use(ElementPlus, {
@@ -27,7 +29,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')
