@@ -2,7 +2,7 @@
     <section class="analyzerBox el-main">
         <section>
             <el-alert
-                title="This page is built for PC views. Before we finish some adaption for mobile phone views, please use a modern computer browser to access this page."
+                title="This page is built for PC views. Before we finish some adaptions for mobile phone views, please use a modern computer browser to access this page."
                 type="warning" center show-icon />
             <el-space class="analyzerBoxHeader">
                 <el-text id="textInput" class="tabActive" @click="changeTab('-1')">
@@ -54,7 +54,7 @@
             <el-upload class="uploadFile" :drag="true" :accept="acceptFile" :limit="1" :method="uploadMethod"
                 :with-credentials="true" :show-file-list="true" :auto-upload="false" :on-change="checkFile"
                 :on-error="up.resShowErr" :on-success="up.resShowSuccess" :on-remove="function () { uploadAvail = false; }"
-                ref="upload" :on-exceed="handleExceed" :file-list="fileList" :http-request="fileAnalyze">
+                ref="upload" :on-exceed="handleExceed" v-model:file-list="fileList" :http-request="fileAnalyze">
                 <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                 <div class="el-upload__text">
                     Drop file here or <em>click to upload</em>
@@ -67,7 +67,7 @@
                 </template>
             </el-upload>
             <el-row class="analyzeBtnGroups">
-                <el-button type="primary" :disabled="!uploadAvail" @click="fileAnalyze()">Upload & Analyze</el-button>
+                <el-button type="primary" :disabled="!uploadAvail" @click="fileAnalyze">Upload & Analyze</el-button>
             </el-row>
         </section>
         <section class="analyzerBoxResultHeader" v-if="detailResult.isExisted">
@@ -159,14 +159,15 @@ const sentimentalText = reactive(['Positive', 'Neutral', 'Negative']);
 const upload = ref<UploadInstance>()
 let detailResult = reactive({
     data: [
-        ["Claim", "This is a text that used for claim something."],
-        ["Claim", "I know that it is weird to get into this situation, but I'm gonna frankly speak out for claiming stuff for everyone sitting here."],
-        ["Evidence", "This article shows the fact that LGBT community is still having a long way to go to fight actually for their legal rights."]
+        // ["Claim", "This is a text that used for claim something."],
+        // ["Claim", "I know that it is weird to get into this situation, but I'm gonna frankly speak out for claiming stuff for everyone sitting here."],
+        // ["Evidence", "This article shows the fact that LGBT community is still having a long way to go to fight actually for their legal rights."]
     ],
-    isExisted: true
+    isExisted: false
 });
 const analyzeLoading = ref<Boolean>(false);
-let fileList = reactive([]);
+let fileList: any = [];
+let fd = new FormData();
 
 /**
  * 获取update.ts中checkFile的返回值用的中间函数
@@ -268,25 +269,26 @@ const textAnalyze = (text: string) => {
     }, 1000)
 }
 
-const fileAnalyze = () => {
+const fileAnalyze = (params: any) => {
+    if (!params) return;
+    console.log('上传文件实例', params)
     if (!usernameSession && !store.loginStatus
     ) {
         ElMessage.error('Please login first!');
         return;
     }
     // upload.value!.submit();
-    let formData = new FormData();
-    if (!fileList) {
+    if (!fileList[0]) {
         return;
     }
-    formData.append("file", fileList[0]);
+    fd.append("file", fileList[0].raw);
     analyzeLoading.value = true;
     detailResult.data = [];
     detailResult.isExisted = false;
     sentimentalIndex.value = 0;
     setTimeout(async () => {
         opt.debounce(async () => {
-            let res = await ana.fileAnalyzeApi(formData);
+            let res = await ana.fileAnalyzeApi(fd);
             res = opt.formalizeRes(res);
             analyzeLoading.value = false;
             if (!res) return;

@@ -27,6 +27,7 @@ export async function loginApi(loginForm: Object) {
             email: loginForm['loginEmail']
         }
     }).then(res => {
+        // console.log(res);
         _res = res;
     }).catch(err => {
         console.error(err);

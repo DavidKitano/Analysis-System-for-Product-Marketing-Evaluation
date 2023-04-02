@@ -98,7 +98,13 @@ export function formalizeRes(res: any) {
         return;
     }
     const code = String(res.data.code);
-    const data = res.data.data ? undefined : res.data;
+    let data: any;
+    if(res.data.data){
+        data = res.data.data
+    }
+    else{
+        data = res.data;
+    }
     const msg = String(res.data.message);
     const _res = {
         httpStatusCode: '200',

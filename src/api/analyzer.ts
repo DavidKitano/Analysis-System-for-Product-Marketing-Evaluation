@@ -38,6 +38,7 @@ export async function fileAnalyzeApi(data: FormData) {
     if (!data || !store.loginStatus)
         return opt.errRes;
     let _res;
+    console.log(data.get('file'))
     await anaAxios({
         method: 'POST',
         url: url + '',

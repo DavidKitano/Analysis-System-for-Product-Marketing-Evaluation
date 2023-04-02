@@ -422,7 +422,9 @@ const loginSubmit = async (formEl: FormInstance | undefined) => {
             setTimeout(async () => {
                 opt.debounce(async () => {
                     let res = await auth.loginApi(loginForm);
+                    console.log(res);
                     res = opt.formalizeRes(res);
+                    console.log(res);
                     loginLoading.value = false;
                     if (!res) return;
                     if (res['avail']) {

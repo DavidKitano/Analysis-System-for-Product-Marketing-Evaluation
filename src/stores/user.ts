@@ -16,7 +16,7 @@ export const useMainStore = defineStore('main', {
         return {
             username: '',
             id: '',
-            loginStatus: false
+            loginStatus: true
         };
     },
 
