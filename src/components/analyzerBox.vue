@@ -147,7 +147,6 @@ const articleTextRows = ref<number>(10);
 const articleLock = ref<Boolean>(false);
 const acceptFile = ref<String>("text/plain");
 // const acceptFile = ref<String>(".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-const uploadUrl = ref<String>("");
 const uploadMethod = ref<String>("POST");
 const uploadAvail = ref<Boolean>(false);
 const sentimentalIndex = ref<number>(0);
@@ -159,8 +158,12 @@ const sentimentalUrl = reactive([
 const sentimentalText = reactive(['Positive', 'Neutral', 'Negative']);
 const upload = ref<UploadInstance>()
 let detailResult = reactive({
-    data: [],
-    isExisted: false
+    data: [
+        ["Claim", "This is a text that used for claim something."],
+        ["Claim", "I know that it is weird to get into this situation, but I'm gonna frankly speak out for claiming stuff for everyone sitting here."],
+        ["Evidence", "This article shows the fact that LGBT community is still having a long way to go to fight actually for their legal rights."]
+    ],
+    isExisted: true
 });
 const analyzeLoading = ref<Boolean>(false);
 let fileList = reactive([]);
@@ -222,8 +225,7 @@ const changeTab = (param: any) => {
 
 const textAnalyze = (text: string) => {
     // console.log(store.loginStatus)
-    if (!usernameSession
-        // && !store.loginStatus
+    if (!usernameSession && !store.loginStatus
     ) {
         ElMessage.error('Please login first!');
         return;
@@ -267,8 +269,7 @@ const textAnalyze = (text: string) => {
 }
 
 const fileAnalyze = () => {
-    if (!usernameSession
-        // &&!store.loginStatus
+    if (!usernameSession && !store.loginStatus
     ) {
         ElMessage.error('Please login first!');
         return;

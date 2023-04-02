@@ -16,7 +16,7 @@ export const useMainStore = defineStore('main', {
         return {
             username: '',
             id: '',
-            loginStatus: true
+            loginStatus: false
         };
     },
 
@@ -24,21 +24,31 @@ export const useMainStore = defineStore('main', {
      * computed，计算属性，缓存
      */
     getters: {
+        computed(): boolean {
+            let tmp: boolean;
+            if (sessionStorage.getItem('username')) {
+                tmp = true;
+            }
+            else {
+                tmp = false;
+            }
+            return this.loginStatus = tmp;
+        }
     },
 
     /**
      * methods，业务逻辑，修改state
      */
     actions: {
-        setUsername(data: string) {
+        setUsername(data: any) {
             this.username = data;
         },
 
-        setId(data: string) {
+        setId(data: any) {
             this.id = data;
         },
 
-        setLoginStatus(data: boolean) {
+        setLoginStatus(data: any) {
             this.loginStatus = data;
         }
     }

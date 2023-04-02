@@ -66,8 +66,7 @@ const fullscreenLoading = ref<Boolean>(false);
 // const usernameStored = useMainStore().username;
 const usernameSession = sessionStorage.getItem('username');
 const isLogin = ref<Boolean>(false)
-if (usernameSession
-    //&& store.loginStatus
+if (usernameSession && store.loginStatus
 ) {
     isLogin.value = true;
 }

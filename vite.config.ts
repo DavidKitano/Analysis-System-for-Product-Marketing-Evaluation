@@ -41,7 +41,7 @@ export default defineConfig({
   server: {
     base: process.env.NODE_ENV === 'production' ? './' : '/',
     host: 'localhost',
-    port: 5173,
+    port: 80,
     open: true,
     // https: true,
     proxy: {
